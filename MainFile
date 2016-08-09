@@ -1,0 +1,72 @@
+import random
+import functions.py
+
+"""
+BASIC ENCRYPTER v 0.0.1
+Created by Antonio Jarreta. Copyright 2016
+This piece of software is intended for educational purposes only.
+If you paid for this, you've been cheated in more ways that you can think of.
+"""
+
+print 'Welcome to the Basic Encrypter program. \nThis program will take any text and encrypt it with a randomly generated key.'
+UserInput = raw_input("Please introduce the text you want to encrypt: ")
+EncryptionMask = random.randint(0, 255)
+print EncryptionMask
+EncryptedText = []
+ExceptionList = {}
+print str(unichr(127))
+
+"""
+This loop takes every character and encrypts it, assembling the encrypted text afterwards.
+"""
+
+for index, i in enumerate(UserInput, start=0):
+    CurrentIntChar = ord(i)
+    print index
+    while True:
+        try:
+            CurrentEncryptedChar = str(unichr(CurrentIntChar ^ EncryptionMask))
+            break
+        except UnicodeEncodeError:
+            CurrentEncryptedChar = str(unichr(127))
+            ExceptionList.update({index: CurrentIntChar})
+            break
+    EncryptedText.append(CurrentEncryptedChar)
+    print "The letter \"", i, "\"with the integer value of", CurrentIntChar, \
+          "was encrypted into \"", CurrentEncryptedChar, \
+          "\"that has the integer value", ord(CurrentEncryptedChar), \
+          "and has the variable type", type(CurrentEncryptedChar)
+
+EncryptedText = ''.join(EncryptedText)
+
+"""
+This loop takes the encrypted text char by char, returning the original char and assembling the text
+"""
+
+print ExceptionList
+
+RestoredText = []
+
+for index, i in enumerate(EncryptedText, start=0):
+    if index in ExceptionList:
+        CurrentIntChar = ord(ExceptionList[index])
+    else:
+        CurrentIntChar = ord(i)
+    while True:
+        try:
+            CurrentRestoredChar = str(unichr(CurrentIntChar ^ EncryptionMask))
+            break
+        except UnicodeEncodeError:
+            CurrentRestoredChar = "X"
+    RestoredText.append(CurrentRestoredChar)
+    print "The letter \"", i, "\"with the integer value of", CurrentIntChar, \
+        "was de-encrypted to \"", CurrentRestoredChar, \
+        "\"that has the integer value", ord(CurrentRestoredChar), \
+        "and has the variable type", type(CurrentRestoredChar)
+
+RestoredText = ''.join(RestoredText)
+
+print "The encryption key is", EncryptionMask, bin(EncryptionMask)
+print "Your text is:", UserInput
+print "Your encrypted text is:", EncryptedText
+print "Your returned text is:", RestoredText
